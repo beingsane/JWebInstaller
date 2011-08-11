@@ -1,11 +1,25 @@
 <?php
+/**
+ * Web installer class.
+ *
+ */
 class WebInstaller
 {
+    public static function checkRequirements()
+    {
+        $errors = array();
+
+        if ( ! function_exists('curl_init'))
+        $errors[] = 'Curl is not available';
+
+        if( ! function_exists('zip_open'))
+        $errors[] = 'ZLib is not available';
+
+        return $errors;
+    }
+
     public static function fetchUri($uri, $target = false)
     {
-        if ( ! function_exists('curl_init'))
-        throw new Exception('Curl is not available');
-
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $uri);

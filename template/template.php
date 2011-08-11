@@ -1,12 +1,12 @@
 <?php
-defined('DS') || define('DS', DIRECTORY_SEPARATOR);
-
+define('DS', DIRECTORY_SEPARATOR);
+// define('NL', "\n");
+define('NL', '<br />');
 define('BASE_DIR', dirname(__FILE__));
 
 ini_set('implicit_flush', 1);
 
 $fileName = 'Joomla_1.7.0-Stable-Full_Package.zip';
-//$fileName = 'blabla.zip';
 
 $target = BASE_DIR.DS.$fileName;
 
@@ -17,55 +17,63 @@ $uri = 'http://joomlacode.org/gf/download/frsrelease/'.$package.'/'.$id.'/'.$fil
 
 //$uri = 'http://indigogit2.kuku/testinstaller/'.$fileName;
 
-
+$action = @$_GET['action'];
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>JWebInstaller</title>
+</head>
+<body>
+<h1>JWebInstaller</h1>
+<?php
 try
 {
-    /*
-    $uri = 'http://update.joomla.org/core/extension.xml';
-    $updates = WebInstaller::fetchUri($uri);
+    $errors = WebInstaller::checkRequirements();
 
-    if( ! $updates)
-    throw new Exception('No updates found');
+    if($errors)
+    throw new Exception(implode(NL, $errors));
 
-    $xml = simplexml_load_string($updates);
-
-    //     var_dump($xml);
-
-    if( ! isset($xml->update))
-    throw new Exception('Invalid update file');
-
-    foreach ($xml->update as $update)
+    if( ! $action)
     {
-    echo $update->description;
-    echo $update->version;
-    echo '<br />';
-    var_dump($update);
+    ?>
+    <p><?php echo $fileName; ?></p>
+    <p>This will Download Joomla! and unzip it to the root of your web space.</p>
+    <a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=go">Start</a>
+
+    <?php
     }
-
-    return;
-    */
-
-    if( ! file_exists($target))
+    else
     {
-        echo 'Downloading '.$fileName.' ...';
 
-        if( ! WebInstaller::fetchUri($uri, $target))
-        throw new Exception('Unable to download file');
+        if( ! file_exists($target))
+        {
+            echo 'Downloading '.$fileName.' ...';
+
+            if( ! WebInstaller::fetchUri($uri, $target))
+            throw new Exception('Unable to download file');
+        }
+
+        echo 'Unzipping...';
+
+        WebInstaller::unzip($fileName);
+
+        echo 'Finished =;)'.NL;
+
+        echo '<h3><a href="index.php">Proceed with the Joomla! installation.</a></h3>';
+
+        echo '<h2 style="color: red;">Do not forget to remove this script !</h2>';
     }
-
-    echo 'Unzipping...';
-
-    WebInstaller::unzip($fileName);
-
-    echo 'alles schön :)';
-
-    echo "\n";
-
 }
-catch (Exception $e)
+catch(Exception $e)
 {
     echo $e->getMessage();
 }
+
+?>
+</body>
+</html>
+<?php
 
 /**@@WEBINSTALLER_CLASS@@**/
 
