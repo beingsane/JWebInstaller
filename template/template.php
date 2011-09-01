@@ -37,15 +37,13 @@ try
     if( ! $action)
     {
     ?>
-    <p><?php echo $fileName; ?></p>
-    <p>This will Download Joomla! and unzip it to the root of your web space.</p>
-    <a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=go">Start</a>
-
+        <p><?php echo $fileName; ?></p>
+        <p>This will Download Joomla! and unzip it to the root of your web space.</p>
+        <a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=go">Start</a>
     <?php
     }
     else
     {
-
         if( ! file_exists($target))
         {
             echo 'Downloading '.$fileName.' ...';
